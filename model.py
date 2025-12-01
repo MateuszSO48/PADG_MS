@@ -1,0 +1,3 @@
+porty:list=[]
+
+pracownicy:list=[]
