@@ -6,7 +6,7 @@ class Port:
         self.img_url = img_url
 
 
-def port_info(port_data:list, pracownik_data:list)->None:
+def port_info(port_data:list)->None:
     for port in port_data:
         print(f"Port {port.port_location} ma {port.docks} stanowisk i zawiera opis: {port.description}")
 
@@ -49,6 +49,8 @@ def pracownicy_portu(port_data:list, pracownik_data:list)->None:
                 print(f" Pracownik - {pracownik.imie} {pracownik.nazwisko} zarabiający {pracownik.pensja} ")
     else:
             print("Brak przypisanych pracowników ")
+
+
 
 class Pracownik:
     def __init__(self, imie:str, nazwisko:str, pensja:int, work_location:str):
@@ -96,4 +98,43 @@ def update_pracownik(pracownik_data:list, port_data:list)->None:
             pracownik.work_location = input("Podaj nazwę nowej miejsowości pracy: ")
 
 
-# dodanie funkcji obsługującej lokalizację
+
+class Klient:
+    def __init__(self, imie:str, nazwisko:str, miejscowość:str, rok_urodzenia:int):
+        self.imie = imie
+        self.nazwisko = nazwisko
+        self.miejscowość = miejscowość
+        self.rok_urodzenia = rok_urodzenia
+
+
+def klient_info(klient_data: list) -> None:
+    for klient in klient_data:
+        print(f"Klient {klient.imie} {klient.nazwisko} z miejscowości {klient.miejscowość} urodził się w {klient.rok_urodzenia}")
+
+
+def add_klient(klient_data:list)->None:
+    imie:str = input("Podaj imie klienta: ")
+    nazwisko:str = input("Podaj nazwisko klienta: ")
+    miejscowość:str = input("Podaj miejscowość klienta: ")
+    rok_urodzenia:int = int(input("Podaj rok urodzenia klienta: "))
+    klient_data.append(Klient(imie=imie, nazwisko=nazwisko, miejscowość=miejscowość, rok_urodzenia=rok_urodzenia))
+
+
+def remove_klient(klient_data:list)->None:
+    tmp_imie:str=input("Podaj imie klienta: ")
+    for klient in klient_data:
+        if klient.imie == tmp_imie:
+            klient_data.remove(klient)
+
+def update_klient(klient_data:list)->None:
+    tmp_imie:str=input("Podaj imie klienta do zaaktualzowania: ")
+    for klient in klient_data:
+        if klient.imie == tmp_imie:
+            klient.imie = input("Podaj nowe imie klienta: ")
+            klient.nazwisko = input("Podaj nowe nazwisko klienta: ")
+            klient.miejscowość = input("Podaj nową miejscowość klienta: ")
+
+
+
+
+#dodanie funkcji obsługującej lokalizację

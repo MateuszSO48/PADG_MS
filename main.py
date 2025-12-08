@@ -1,5 +1,5 @@
 from controller import *
-from model import porty, pracownicy
+from model import porty, pracownicy, klienci
 
 def main():
     while True:
@@ -7,6 +7,7 @@ def main():
         print("0. Wyjście")
         print("1. Portów")
         print("2. Pracowników")
+        print("3. Klienci")
         function_choice = int(input("Wybierz opcję: "))
 
         if function_choice == 0:
@@ -27,7 +28,7 @@ def main():
                 if tmp_choice == 0:
                     break
                 if tmp_choice == 1:
-                    port_info(porty, pracownicy)
+                    port_info(porty)
                 if tmp_choice == 2:
                     add_port(porty)
                 if tmp_choice == 3:
@@ -61,6 +62,32 @@ def main():
                     remove_pracownik(pracownicy)
                 if tmp_choice == 4:
                     update_pracownik(pracownicy, porty)
+                else:
+                    print("Niepoprawny wybór")
+
+
+        if function_choice ==3:
+            while True:
+                print("********************************MENU KLIENTÓW*********************************")
+                print("0. Powrót")
+                print("1. Wyświetlanie klientów")
+                print("2. Dodaj klienta")
+                print("3. Usuń klienta")
+                print("4. Aktualizuj klienta")
+                print("*********************************************************************************")
+
+                tmp_choice = int(input("Wybierz opcję: "))
+
+                if tmp_choice == 0:
+                    break
+                if tmp_choice == 1:
+                    klient_info(klienci)
+                if tmp_choice == 2:
+                    add_klient(klienci)
+                if tmp_choice == 3:
+                    remove_klient(klienci)
+                if tmp_choice == 4:
+                    update_klient(klienci)
                 else:
                     print("Niepoprawny wybór")
 
