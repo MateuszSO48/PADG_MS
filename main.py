@@ -20,19 +20,22 @@ def main():
                 print("2. Dodaj port")
                 print("3. Usuń port")
                 print("4. Aktualizuj port")
+                print("5. Wyświetlenie pracowników danego portu")
                 print("*********************************************************************************")
                 tmp_choice = int(input("Wybierz opcję: "))
 
                 if tmp_choice == 0:
                     break
                 if tmp_choice == 1:
-                    port_info(porty)
+                    port_info(porty, pracownicy)
                 if tmp_choice == 2:
                     add_port(porty)
                 if tmp_choice == 3:
                     remove_port(porty)
                 if tmp_choice == 4:
                    update_port(porty)
+                if tmp_choice == 5:
+                    pracownicy_portu(porty, pracownicy)
                 else:
                     print("Niepoprawny wybór")
 
@@ -53,11 +56,11 @@ def main():
                 if tmp_choice == 1:
                     pracownik_info(pracownicy)
                 if tmp_choice == 2:
-                    add_pracownik(pracownicy)
+                    add_pracownik(pracownicy, porty)
                 if tmp_choice == 3:
                     remove_pracownik(pracownicy)
                 if tmp_choice == 4:
-                    update_pracownik(pracownicy)
+                    update_pracownik(pracownicy, porty)
                 else:
                     print("Niepoprawny wybór")
 
