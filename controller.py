@@ -1,39 +1,54 @@
 class Port:
-    def __init__(self, location:str, docks:int, description:str, img_url:str):
-        self.location = location
+    def __init__(self, port_location:str, docks:int, description:str, img_url:str):
+        self.port_location = port_location
         self.docks = docks
         self.description = description
         self.img_url = img_url
 
 
-def port_info(port_data:list)->None:
+def port_info(port_data:list, pracownik_data:list)->None:
     for port in port_data:
-        print(f"Port {port.location} ma {port.docks} stanowisk i zawiera opis: {port.description}")
+        print(f"Port {port.port_location} ma {port.docks} stanowisk i zawiera opis: {port.description}")
+
 
 
 def add_port(port_data:list)->None:
-    location:str = input("Podaj miejscowość portu: ")
+    port_location:str = input("Podaj miejscowość portu: ")
     docks:int = int(input("Podaj liczbę stanowisk: "))
     description:str = input("Podaj opis portu: ")
     img_url:str = input("Wprowadź adres URL portu: ")
-    port_data.append(Port(location=location, docks=docks, description=description, img_url=img_url))
+    port_data.append(Port(port_location=port_location, docks=docks, description=description, img_url=img_url))
 
 
 def remove_port(port_data:list)->None:
     tmp_location:str=input("Podaj miejscowość portu do usunięcia: ")
     for port in port_data:
-        if port.location == tmp_location:
+        if port.port_location == tmp_location:
             port_data.remove(port)
 
 
 def update_port(port_data:list)->None:
     tmp_location:str=input("Podaj miejscowść portu do aktualizacji: ")
     for port in port_data:
-        if port.location == tmp_location:
-            port.location = input("Podaj nową miejscowość portu: ")
+        if port.port_location == tmp_location:
+            port.port_location = input("Podaj nową miejscowość portu: ")
             port.docks = int(input("Podaj nową liczbę stanowisk: "))
             port.description = input("Podaj nowy opis portu: ")
 
+
+def pracownicy_portu(port_data:list, pracownik_data:list)->None:
+    print("Aktualne porty: ")
+    for port in port_data:
+     print(f"Port: {port.port_location}")
+    pracownicy_portu_choice:str = input("Podaj nazwę portu, którego pracowników chcesz sprawdzić: ")
+    if pracownik_data:
+        pracownicy_danego_portu = [pracownik for pracownik in pracownik_data if pracownik.work_location == pracownicy_portu_choice]
+    if pracownicy_portu:
+        print(f"Pracownnicy portu {pracownicy_portu_choice}: ")
+        for pracownik in pracownicy_danego_portu:
+                print(f" Pracownik - {pracownik.imie} {pracownik.nazwisko} zarabiający {pracownik.pensja} ")
+    else:
+            print("Brak przypisanych pracowników ")
 
 class Pracownik:
     def __init__(self, imie:str, nazwisko:str, pensja:int, work_location:str):
@@ -48,7 +63,11 @@ def pracownik_info(pracownik_data:list)->None:
         print(f"{pracownik.imie} {pracownik.nazwisko} zarabia {pracownik.pensja} w miejscowości {pracownik.work_location}")
 
 
-def add_pracownik(pracownik_data:list)->None:
+def add_pracownik(pracownik_data:list, port_data:list)->None:
+    print("Dostępne porty: ")
+    for port in port_data:
+        print(f"Port {port.port_location}: {port.description}")
+
     imie:str = input("Podaj imie pracownika: ")
     nazwisko:str = input("Podaj nazwisko: ")
     pensja:int = int(input("Podaj pensję pracownika: "))
@@ -63,11 +82,18 @@ def remove_pracownik(pracownik_data:list)->None:
             pracownik_data.remove(pracownik)
 
 
-def update_pracownik(pracownik_data:list)->None:
+def update_pracownik(pracownik_data:list, port_data:list)->None:
     tmp_imie:str=input("Podaj imie pracownika: ")
+    print("Dostępne porty: ")
+    for port in port_data:
+        print(f"Port {port.port_location}: {port.description}")
+
     for pracownik in pracownik_data:
         if pracownik.imie == tmp_imie:
             pracownik.imie = input("Podaj nowe imie pracownika: ")
             pracownik.nazwisko = input("Podaj nowe nazwisko pracownika: ")
             pracownik.pensja = int(input("Podaj nową pensję: "))
             pracownik.work_location = input("Podaj nazwę nowej miejsowości pracy: ")
+
+
+# dodanie funkcji obsługującej lokalizację
