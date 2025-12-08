@@ -51,6 +51,19 @@ def pracownicy_portu(port_data:list, pracownik_data:list)->None:
             print("Brak przypisanych pracowników ")
 
 
+def klienci_portu(port_data:list, klient_data:list)->None:
+    print("Aktualne porty: ")
+    for port in port_data:
+        print(f"Port: {port.port_location}")
+    klienci_portu_choice:str = input("Podaj nazwę portu, którego klientów chcesz sprawdzić: ")
+    if klient_data:
+        klienci_danego_portu = [klient for klient in klient_data if klient.miejscowość == klienci_portu_choice]
+    if klienci_portu:
+        print(f"Klienci portu: {klienci_portu_choice}: ")
+        for klient in klienci_danego_portu:
+            print(f" Klient - {klient.imie} {klient.nazwisko} urodzonony {klient.rok_urodzenia}")
+
+
 
 class Pracownik:
     def __init__(self, imie:str, nazwisko:str, pensja:int, work_location:str):
@@ -112,7 +125,10 @@ def klient_info(klient_data: list) -> None:
         print(f"Klient {klient.imie} {klient.nazwisko} z miejscowości {klient.miejscowość} urodził się w {klient.rok_urodzenia}")
 
 
-def add_klient(klient_data:list)->None:
+def add_klient(klient_data:list, port_data:list)->None:
+    print("Dostępne porty: ")
+    for port in port_data:
+        print(f"Port {port.port_location}: {port.description}")
     imie:str = input("Podaj imie klienta: ")
     nazwisko:str = input("Podaj nazwisko klienta: ")
     miejscowość:str = input("Podaj miejscowość klienta: ")
@@ -126,8 +142,11 @@ def remove_klient(klient_data:list)->None:
         if klient.imie == tmp_imie:
             klient_data.remove(klient)
 
-def update_klient(klient_data:list)->None:
+def update_klient(klient_data:list, port_data:list)->None:
     tmp_imie:str=input("Podaj imie klienta do zaaktualzowania: ")
+    print("Dostępne porty: ")
+    for port in port_data:
+        print(f"Port {port.port_location}: {port.description}")
     for klient in klient_data:
         if klient.imie == tmp_imie:
             klient.imie = input("Podaj nowe imie klienta: ")
