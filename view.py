@@ -1,6 +1,7 @@
 from controller import *
 from model import porty, pracownicy, klienci
 
+
 def main():
     while True:
         print("Wyświetlanie, dodawanie, usuwanie, aktualizacja czego chcesz przeprowadzić: ")
