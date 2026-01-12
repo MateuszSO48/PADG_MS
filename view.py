@@ -80,7 +80,38 @@ def zmien_tryb(nowy_tryb):
         entry_rok.grid(row=4, column=1, sticky='ew')
         pola_formularza['rok_urodzenia'] = entry_rok
 
-# dodać funkcję dodające obiekt, dokończyć funkcjonalność formularza
+def dodaj_obiekt():
+    print(f"Tryb: {aktualny_tryb}")
+
+    try:
+        if aktualny_tryb == "Porty":
+            dane ={
+            "Lokalizacja": pola_formularza['port_location'].get(),
+            "Doki": pola_formularza['docks'].get(),
+            "Opis": pola_formularza['description'].get(),
+            }
+            print("Pobrane dane Portu:", dane)
+
+        if aktualny_tryb == "Pracownicy":
+            dane = {
+                "Imię": pola_formularza['imie'].get(),
+                "Nazwisko": pola_formularza['nazwisko'].get(),
+                "Pensja": pola_formularza['pensja'].get(),
+                "Miejce pracy": pola_formularza['work_location'].get(),
+            }
+            print("Pobrane dane Pracownika:", dane)
+
+        if aktualny_tryb == "Klienci":
+            dane = {
+                "Imię": pola_formularza['imie'].get(),
+                "Nazwisko": pola_formularza['nazwisko'].get(),
+                "Miasto": pola_formularza['miejscowość'].get(),
+                "Rok urodzenia": pola_formularza['rok_urodzenia'].get(),
+            }
+            print("Pobrane dane Klienci:", dane)
+
+    except ValueError:
+        print("Nie podano obiekto")
 
 
 
@@ -113,29 +144,6 @@ button_klienci.grid(row=2, column=0, sticky='ew', pady=2)
 
 #RAMKA FORMULARZ
 ramka_formularz.grid_columnconfigure(1, weight=1)
-
-label_formularz = Label(ramka_formularz, text="Formularz: ")
-label_formularz.grid(row=0, column=0, columnspan=2, sticky='w')
-
-label_imie = Label(ramka_formularz, text="Imie: ")
-label_imie.grid(row=1, column=0, sticky='w')
-entry_name = Entry(ramka_formularz)
-entry_name.grid(row=1, column=1, sticky='ew')
-
-label_lokalizacja = Label(ramka_formularz, text="Lokalizacja: ")
-label_lokalizacja.grid(row=2, column=0, sticky='w')
-entry_lokalizacja = Entry(ramka_formularz)
-entry_lokalizacja.grid(row=2, column=1, sticky='ew')
-
-label_posty = Label(ramka_formularz, text="Posty: ")
-label_posty.grid(row=3, column=0, sticky='w')
-entry_posty = Entry(ramka_formularz)
-entry_posty.grid(row=3, column=1, sticky='ew')
-
-label_img_url = Label(ramka_formularz, text="Obrazek: ")
-label_img_url.grid(row=4, column=0, sticky='w')
-entry_img_url = Entry(ramka_formularz)
-entry_img_url.grid(row=4, column=1, sticky='ew')
 
 
 #RAMKA FUNKCJONALMOŚCI
@@ -172,5 +180,13 @@ map_widget = tkintermapview.TkinterMapView(ramka_mapa, width=800, height=720, co
 map_widget.set_position(52.0, 21.0)
 map_widget.set_zoom(5)
 map_widget.pack(fill="both", expand=True)
+
+
+#te przyciski będą w main
+button_porty.config(command=lambda: zmien_tryb("Porty"))
+button_pracownicy.config(command=lambda: zmien_tryb("Pracownicy"))
+button_klienci.config(command=lambda: zmien_tryb("Klienci"))
+
+zmien_tryb("Porty")
 
 root.mainloop()
