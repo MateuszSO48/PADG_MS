@@ -5,9 +5,114 @@ root = Tk()
 root.title("System zarządziania siecią portów")
 root.geometry("1200x760")
 
+aktualny_tryb = "Porty"
+pola_formularza= {}
 
 root.grid_columnconfigure(1, weight=1)
 root.grid_rowconfigure(3, weight=1)
+
+def zmien_tryb(nowy_tryb):
+    global aktualny_tryb
+    aktualny_tryb = nowy_tryb
+
+    for widget in ramka_formularz.winfo_children():
+        widget.destroy()
+
+    pola_formularza.clear()
+
+    Label(ramka_formularz, text=f"Formularz: {nowy_tryb}").grid(row=0, column=0, columnspan=2)
+
+    if nowy_tryb == "Porty":
+        Label(ramka_formularz, text="Lokalizacja: ").grid(row=1, column=0, sticky='w')
+        entry_loc = Entry(ramka_formularz)
+        entry_loc.grid(row=1, column=1, sticky='ew')
+        pola_formularza['port_location'] = entry_loc
+
+        Label(ramka_formularz, text="Liczba miejsc : ").grid(row=2, column=0, sticky='w')
+        entry_docks = Entry(ramka_formularz)
+        entry_docks.grid(row=2, column=1, sticky='ew')
+        pola_formularza['docks'] = entry_docks
+
+        Label(ramka_formularz, text="Opis: ").grid(row=3, column=0, sticky='w')
+        entry_opis = Entry(ramka_formularz)
+        entry_opis.grid(row=3, column=1, sticky='ew')
+        pola_formularza['description'] = entry_opis
+
+    elif nowy_tryb == "Pracownicy":
+        Label(ramka_formularz, text="Imię: ").grid(row=1, column=0, sticky='w')
+        entry_imie = Entry(ramka_formularz)
+        entry_imie.grid(row=1, column=1, sticky='ew')
+        pola_formularza['imie'] = entry_imie
+
+        Label(ramka_formularz, text="Nazwisko: ").grid(row=2, column=0, sticky='w')
+        entry_nazwisko = Entry(ramka_formularz)
+        entry_nazwisko.grid(row=2, column=1, sticky='ew')
+        pola_formularza['nazwisko'] = entry_nazwisko
+
+        Label(ramka_formularz, text="Pensja: ").grid(row=3, column=0, sticky='w')
+        entry_pensja = Entry(ramka_formularz)
+        entry_pensja.grid(row=3, column=1, sticky='ew')
+        pola_formularza['pensja'] = entry_pensja
+
+        Label(ramka_formularz, text="Miejsce pracy: ").grid(row=4, column=0, sticky='w')
+        entry_work = Entry(ramka_formularz)
+        entry_work.grid(row=4, column=1, sticky='ew')
+        pola_formularza['work_location'] = entry_work
+
+    elif nowy_tryb == "Klienci":
+        Label(ramka_formularz, text="Imie: ").grid(row=1, column=0, sticky='w')
+        entry_imie = Entry(ramka_formularz)
+        entry_imie.grid(row=1, column=1, sticky='ew')
+        pola_formularza['imie'] = entry_imie
+
+        Label(ramka_formularz, text="Nazwisko: ").grid(row=2, column=0, sticky='w')
+        entry_nazwisko = Entry(ramka_formularz)
+        entry_nazwisko.grid(row=2, column=1, sticky='ew')
+        pola_formularza['nazwisko'] = entry_nazwisko
+
+        Label(ramka_formularz, text="Miejscowość: ").grid(row=3, column=0, sticky='w')
+        entry_miejscowość = Entry(ramka_formularz)
+        entry_miejscowość.grid(row=3, column=1, sticky='ew')
+        pola_formularza['miejscowość'] = entry_miejscowość
+
+        Label(ramka_formularz, text="Rok urodzenia: ").grid(row=4, column=0, sticky='w')
+        entry_rok = Entry(ramka_formularz)
+        entry_rok.grid(row=4, column=1, sticky='ew')
+        pola_formularza['rok_urodzenia'] = entry_rok
+
+def dodaj_obiekt():
+    print(f"Tryb: {aktualny_tryb}")
+
+    try:
+        if aktualny_tryb == "Porty":
+            dane ={
+            "Lokalizacja": pola_formularza['port_location'].get(),
+            "Doki": pola_formularza['docks'].get(),
+            "Opis": pola_formularza['description'].get(),
+            }
+            print("Pobrane dane Portu:", dane)
+
+        if aktualny_tryb == "Pracownicy":
+            dane = {
+                "Imię": pola_formularza['imie'].get(),
+                "Nazwisko": pola_formularza['nazwisko'].get(),
+                "Pensja": pola_formularza['pensja'].get(),
+                "Miejce pracy": pola_formularza['work_location'].get(),
+            }
+            print("Pobrane dane Pracownika:", dane)
+
+        if aktualny_tryb == "Klienci":
+            dane = {
+                "Imię": pola_formularza['imie'].get(),
+                "Nazwisko": pola_formularza['nazwisko'].get(),
+                "Miasto": pola_formularza['miejscowość'].get(),
+                "Rok urodzenia": pola_formularza['rok_urodzenia'].get(),
+            }
+            print("Pobrane dane Klienci:", dane)
+
+    except ValueError:
+        print("Nie podano obiekto")
+
 
 
 ramka_przyciski = Frame(root)
@@ -39,29 +144,6 @@ button_klienci.grid(row=2, column=0, sticky='ew', pady=2)
 
 #RAMKA FORMULARZ
 ramka_formularz.grid_columnconfigure(1, weight=1)
-
-label_formularz = Label(ramka_formularz, text="Formularz: ")
-label_formularz.grid(row=0, column=0, columnspan=2, sticky='w')
-
-label_imie = Label(ramka_formularz, text="Imie: ")
-label_imie.grid(row=1, column=0, sticky='w')
-entry_name = Entry(ramka_formularz)
-entry_name.grid(row=1, column=1, sticky='ew')
-
-label_lokalizacja = Label(ramka_formularz, text="Lokalizacja: ")
-label_lokalizacja.grid(row=2, column=0, sticky='w')
-entry_lokalizacja = Entry(ramka_formularz)
-entry_lokalizacja.grid(row=2, column=1, sticky='ew')
-
-label_posty = Label(ramka_formularz, text="Posty: ")
-label_posty.grid(row=3, column=0, sticky='w')
-entry_posty = Entry(ramka_formularz)
-entry_posty.grid(row=3, column=1, sticky='ew')
-
-label_img_url = Label(ramka_formularz, text="Obrazek: ")
-label_img_url.grid(row=4, column=0, sticky='w')
-entry_img_url = Entry(ramka_formularz)
-entry_img_url.grid(row=4, column=1, sticky='ew')
 
 
 #RAMKA FUNKCJONALMOŚCI
@@ -98,5 +180,13 @@ map_widget = tkintermapview.TkinterMapView(ramka_mapa, width=800, height=720, co
 map_widget.set_position(52.0, 21.0)
 map_widget.set_zoom(5)
 map_widget.pack(fill="both", expand=True)
+
+
+#te przyciski będą w main
+button_porty.config(command=lambda: zmien_tryb("Porty"))
+button_pracownicy.config(command=lambda: zmien_tryb("Pracownicy"))
+button_klienci.config(command=lambda: zmien_tryb("Klienci"))
+
+zmien_tryb("Porty")
 
 root.mainloop()
