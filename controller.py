@@ -9,7 +9,6 @@ def add_port(port_data:list)->None:
     port_location:str = input("Podaj miejscowość portu: ")
     docks:int = int(input("Podaj liczbę stanowisk: "))
     description:str = input("Podaj opis portu: ")
-    img_url:str = input("Wprowadź adres URL portu: ")
     port_data.append(Port(port_location=port_location, docks=docks, description=description, img_url=img_url))
 
 

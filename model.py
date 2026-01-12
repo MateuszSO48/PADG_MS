@@ -10,7 +10,6 @@ class Port:
         self.port_location = port_location
         self.docks = docks
         self.description = description
-        self.img_url = img_url
         self.coords = self.get_coordinates()
 
     def get_coordinates(self):
