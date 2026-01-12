@@ -1,15 +1,21 @@
 from model import Port, Pracownik, Klient
 
+porty = []
+pracownicy = []
+klienci = []
+
+
 def port_info(port_data:list)->None:
     for port in port_data:
         print(f"Port {port.port_location} ma {port.docks} stanowisk i zawiera opis: {port.description}")
 
 
-def add_port(port_data:list)->None:
-    port_location:str = input("Podaj miejscowość portu: ")
-    docks:int = int(input("Podaj liczbę stanowisk: "))
-    description:str = input("Podaj opis portu: ")
-    port_data.append(Port(port_location=port_location, docks=docks, description=description, img_url=img_url))
+def add_port(port_data:dict)->None:
+    port_location = port_data['port_location']
+    docks = int(port_data['docks'])
+    description = port_data['description']
+    porty.append(Port(port_location=port_location, docks=docks, description=description))
+    print(f"Dodano port: {port_location}")
 
 
 def remove_port(port_data:list)->None:
@@ -28,49 +34,19 @@ def update_port(port_data:list)->None:
             port.description = input("Podaj nowy opis portu: ")
             break
 
-def pracownicy_portu(port_data:list, pracownik_data:list)->None:
-    print("Dostępne porty: ")
-    for port in port_data:
-     print(f"Port: {port.port_location}")
-    pracownicy_portu_choice:str = input("Podaj nazwę portu, którego pracowników chcesz sprawdzić: ")
-    if pracownik_data:
-        pracownicy_danego_portu = [pracownik for pracownik in pracownik_data if pracownik.work_location == pracownicy_portu_choice]
-    if pracownicy_portu:
-        print(f"Pracownnicy portu {pracownicy_portu_choice}: ")
-        for pracownik in pracownicy_danego_portu:
-                print(f" Pracownik - {pracownik.imie} {pracownik.nazwisko} zarabiający {pracownik.pensja} ")
-    else:
-            print("Brak przypisanych pracowników ")
-
-
-def klienci_portu(port_data:list, klient_data:list)->None:
-    print("Aktualne porty: ")
-    for port in port_data:
-        print(f"Port: {port.port_location}")
-    klienci_portu_choice:str = input("Podaj nazwę portu, którego klientów chcesz sprawdzić: ")
-    if klient_data:
-        klienci_danego_portu = [klient for klient in klient_data if klient.miejscowość == klienci_portu_choice]
-    if klienci_portu:
-        print(f"Klienci portu: {klienci_portu_choice}: ")
-        for klient in klienci_danego_portu:
-            print(f" Klient - {klient.imie} {klient.nazwisko} urodzonony {klient.rok_urodzenia}")
-
 
 def pracownik_info(pracownik_data:list)->None:
     for pracownik in pracownik_data:
         print(f"{pracownik.imie} {pracownik.nazwisko} zarabia {pracownik.pensja} w miejscowości {pracownik.work_location}")
 
 
-def add_pracownik(pracownik_data:list, port_data:list)->None:
-    print("Dostępne porty: ")
-    for port in port_data:
-        print(f"Port {port.port_location}: {port.description}")
-
-    imie:str = input("Podaj imie pracownika: ")
-    nazwisko:str = input("Podaj nazwisko: ")
-    pensja:int = int(input("Podaj pensję pracownika: "))
-    work_location:str = input("Podaj miejscowość pracy: ")
-    pracownik_data.append(Pracownik(imie=imie, nazwisko=nazwisko, pensja=pensja, work_location=work_location))
+def add_pracownik(pracownik_data:dict)->None:
+    imie = pracownik_data['imie']
+    nazwisko = pracownik_data['nazwisko']
+    pensja = int(pracownik_data['pensja'])
+    work_location = pracownik_data['work_location']
+    pracownicy.append(Pracownik(imie=imie, nazwisko=nazwisko, pensja=pensja, work_location=work_location))
+    print(pracownicy)
 
 
 def remove_pracownik(pracownik_data:list)->None:
@@ -99,15 +75,12 @@ def klient_info(klient_data: list) -> None:
         print(f"Klient {klient.imie} {klient.nazwisko} z miejscowości {klient.miejscowość} urodził się w {klient.rok_urodzenia}")
 
 
-def add_klient(klient_data:list, port_data:list)->None:
-    print("Dostępne porty: ")
-    for port in port_data:
-        print(f"Port {port.port_location}: {port.description}")
-    imie:str = input("Podaj imie klienta: ")
-    nazwisko:str = input("Podaj nazwisko klienta: ")
-    miejscowość:str = input("Podaj miejscowość klienta: ")
-    rok_urodzenia:int = int(input("Podaj rok urodzenia klienta: "))
-    klient_data.append(Klient(imie=imie, nazwisko=nazwisko, miejscowość=miejscowość, rok_urodzenia=rok_urodzenia))
+def add_klient(klient_data:dict)->None:
+    imie = klient_data['imie']
+    nazwisko = klient_data['nazwisko']
+    miejscowosc = klient_data['miejscowosc']
+    rok_urodzenia = int(klient_data['rok_urodzenia'])
+    klienci.append(Klient(imie=imie, nazwisko=nazwisko, miejscowosc=miejscowosc, rok_urodzenia=rok_urodzenia))
 
 
 def remove_klient(klient_data:list)->None:
@@ -129,3 +102,4 @@ def update_klient(klient_data:list, port_data:list)->None:
 
 
 #dodanie funkcji obsługującej lokalizację
+

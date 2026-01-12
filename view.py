@@ -71,14 +71,16 @@ def zmien_tryb(nowy_tryb):
         pola_formularza['nazwisko'] = entry_nazwisko
 
         Label(ramka_formularz, text="Miejscowość: ").grid(row=3, column=0, sticky='w')
-        entry_miejscowość = Entry(ramka_formularz)
-        entry_miejscowość.grid(row=3, column=1, sticky='ew')
-        pola_formularza['miejscowość'] = entry_miejscowość
+        entry_miejscowosc = Entry(ramka_formularz)
+        entry_miejscowosc.grid(row=3, column=1, sticky='ew')
+        pola_formularza['miejscowosc'] = entry_miejscowosc
 
         Label(ramka_formularz, text="Rok urodzenia: ").grid(row=4, column=0, sticky='w')
         entry_rok = Entry(ramka_formularz)
         entry_rok.grid(row=4, column=1, sticky='ew')
         pola_formularza['rok_urodzenia'] = entry_rok
+
+import controller
 
 def dodaj_obiekt():
     print(f"Tryb: {aktualny_tryb}")
@@ -86,29 +88,29 @@ def dodaj_obiekt():
     try:
         if aktualny_tryb == "Porty":
             dane ={
-            "Lokalizacja": pola_formularza['port_location'].get(),
-            "Doki": pola_formularza['docks'].get(),
-            "Opis": pola_formularza['description'].get(),
+            "port_location": pola_formularza['port_location'].get(),
+            "docks": pola_formularza['docks'].get(),
+            "description": pola_formularza['description'].get(),
             }
-            print("Pobrane dane Portu:", dane)
+            controller.add_port(dane)
 
         if aktualny_tryb == "Pracownicy":
             dane = {
-                "Imię": pola_formularza['imie'].get(),
-                "Nazwisko": pola_formularza['nazwisko'].get(),
-                "Pensja": pola_formularza['pensja'].get(),
-                "Miejce pracy": pola_formularza['work_location'].get(),
+                "imie": pola_formularza['imie'].get(),
+                "nazwisko": pola_formularza['nazwisko'].get(),
+                "pensja": pola_formularza['pensja'].get(),
+                "work_location": pola_formularza['work_location'].get(),
             }
-            print("Pobrane dane Pracownika:", dane)
+            controller.add_pracownik(dane)
 
         if aktualny_tryb == "Klienci":
             dane = {
-                "Imię": pola_formularza['imie'].get(),
-                "Nazwisko": pola_formularza['nazwisko'].get(),
-                "Miasto": pola_formularza['miejscowość'].get(),
-                "Rok urodzenia": pola_formularza['rok_urodzenia'].get(),
+                "imie": pola_formularza['imie'].get(),
+                "nazwisko": pola_formularza['nazwisko'].get(),
+                "miejscowosc": pola_formularza['miejscowosc'].get(),
+                "rok_urodzenia": pola_formularza['rok_urodzenia'].get(),
             }
-            print("Pobrane dane Klienci:", dane)
+            controller.add_klient(dane)
 
     except ValueError:
         print("Nie podano obiekto")
@@ -186,7 +188,9 @@ map_widget.pack(fill="both", expand=True)
 button_porty.config(command=lambda: zmien_tryb("Porty"))
 button_pracownicy.config(command=lambda: zmien_tryb("Pracownicy"))
 button_klienci.config(command=lambda: zmien_tryb("Klienci"))
+button_dodaj_obiekt.config(command=dodaj_obiekt)
 
 zmien_tryb("Porty")
 
 root.mainloop()
+

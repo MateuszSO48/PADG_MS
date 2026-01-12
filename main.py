@@ -10,3 +10,4 @@ załadowanie bazy danych
 
 
 if __name == '__main__':
+

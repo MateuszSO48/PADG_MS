@@ -6,7 +6,7 @@ klienci:list=[]
 
 
 class Port:
-    def __init__(self, port_location:str, docks:int, description:str, img_url:str):
+    def __init__(self, port_location:str, docks:int, description:str):
         self.port_location = port_location
         self.docks = docks
         self.description = description
@@ -25,6 +25,7 @@ class Port:
         response_html = BeautifulSoup(response.text, 'html.parser')
         latitude = float(response_html.select('.latitude')[1].text.replace(',', '.'))
         longitude = float(response_html.select('.longitude')[1].text.replace(',', '.'))
+        print(f"latitude: {latitude}, longitude: {longitude}")
         return [latitude, longitude]
 
 
@@ -37,10 +38,10 @@ class Pracownik:
 
 
 class Klient:
-    def __init__(self, imie:str, nazwisko:str, miejscowość:str, rok_urodzenia:int):
+    def __init__(self, imie:str, nazwisko:str, miejscowosc:str, rok_urodzenia:int):
         self.imie = imie
         self.nazwisko = nazwisko
-        self.miejscowość = miejscowość
+        self.miejscowosc = miejscowosc
         self.rok_urodzenia = rok_urodzenia
 
 
