@@ -1,5 +1,7 @@
 from tkinter import *
+from tkinter import ttk, messagebox
 import tkintermapview
+import controller
 
 root = Tk()
 root.title("System zarządziania siecią portów")
@@ -10,6 +12,42 @@ pola_formularza= {}
 
 root.grid_columnconfigure(1, weight=1)
 root.grid_rowconfigure(3, weight=1)
+
+
+ramka_przyciski = Frame(root)
+ramka_formularz = Frame(root)
+ramka_funkcjonalnosci = Frame(root)
+ramka_lista = Frame(root)
+ramka_mapa = Frame(root)
+
+
+ramka_przyciski.grid(row=0, column=0, sticky='ew', padx=10, pady=5)
+ramka_formularz.grid(row=1, column=0, sticky='ew', padx=10, pady=5)
+ramka_funkcjonalnosci.grid(row=2, column=0, sticky='ew', padx=10, pady=5)
+ramka_lista.grid(row=3, column=0, sticky='nsew', padx=10, pady=5)
+ramka_mapa.grid(row=0, column=1, rowspan=4, sticky='nsew')
+
+
+def stworz_pole(tekst, klucz, rzad):
+    Label(ramka_formularz, text=tekst).grid(row=rzad, column=0, sticky='w')
+    pole = Entry(ramka_formularz)
+    pole.grid(row=rzad, column=1, sticky='w')
+    pola_formularza[klucz] = pole
+
+
+def pobieranie_pola():
+    return {klucz: pole.get() for klucz, pole in pola_formularza.items()}
+
+
+def wyczysc_pola():
+    for pole in pola_formularza.values():
+        pole.delete(0, END)
+
+def aktualizuj_filtr():
+    lista_miast = ["Wszystkie"] + controller.get_port_names()
+    listbox_filtrowanie['values'] = lista_miast
+    listbox_filtrowanie.current = lista_miast[0]
+
 
 def zmien_tryb(nowy_tryb):
     global aktualny_tryb
@@ -116,31 +154,16 @@ def dodaj_obiekt():
         print("Nie podano obiekto")
 
 
-
-ramka_przyciski = Frame(root)
-ramka_formularz = Frame(root)
-ramka_funkcjonalnosci = Frame(root)
-ramka_lista = Frame(root)
-ramka_mapa = Frame(root)
-
-
-ramka_przyciski.grid(row=0, column=0, sticky='ew', padx=10, pady=5)
-ramka_formularz.grid(row=1, column=0, sticky='ew', padx=10, pady=5)
-ramka_funkcjonalnosci.grid(row=2, column=0, sticky='ew', padx=10, pady=5)
-ramka_lista.grid(row=3, column=0, sticky='nsew', padx=10, pady=5)
-ramka_mapa.grid(row=0, column=1, rowspan=4, sticky='nsew')
-
-
 #RAMKA PRZYCISKI
 ramka_przyciski.grid_columnconfigure(0, weight=1)
 
-button_porty = Button(ramka_przyciski, text="Porty")
+button_porty = Button(ramka_przyciski, text="Porty", command=lambda: zmien_tryb("Porty"))
 button_porty.grid(row=0, column=0, sticky='ew', pady=2)
 
-button_pracownicy = Button(ramka_przyciski, text="Pracownicy")
+button_pracownicy = Button(ramka_przyciski, text="Pracownicy", command=lambda: zmien_tryb("Pracownicy"))
 button_pracownicy.grid(row=1, column=0, sticky='ew', pady=2)
 
-button_klienci = Button(ramka_przyciski, text="Klienci")
+button_klienci = Button(ramka_przyciski, text="Klienci", command=lambda: zmien_tryb("Klienci"))
 button_klienci.grid(row=2, column=0, sticky='ew', pady=2)
 
 
@@ -152,16 +175,16 @@ ramka_formularz.grid_columnconfigure(1, weight=1)
 ramka_funkcjonalnosci.grid_columnconfigure(0, weight=1)
 ramka_funkcjonalnosci.grid_columnconfigure(1, weight=1)
 
-button_dodaj_obiekt = Button(ramka_funkcjonalnosci, text="Dodaj obiekt")
+button_dodaj_obiekt = Button(ramka_funkcjonalnosci, text="Dodaj obiekt", command=dodaj_obiekt)
 button_dodaj_obiekt.grid(row=0, column=0, sticky='ew', padx=1, pady=1)
 
-button_usun_obiekt = Button(ramka_funkcjonalnosci, text="Usuń obiekt")
+button_usun_obiekt = Button(ramka_funkcjonalnosci, text="Usuń obiekt", command=usun_obiekt)
 button_usun_obiekt.grid(row=0, column=1, sticky='ew', padx=1, pady=1)
 
-button_aktualizuj = Button(ramka_funkcjonalnosci, text="Aktualizuj")
+button_aktualizuj = Button(ramka_funkcjonalnosci, text="Aktualizuj", command=aktualizuj)
 button_aktualizuj.grid(row=1, column=0, sticky='ew', padx=1, pady=1)
 
-button_szczegoly = Button(ramka_funkcjonalnosci, text="Pokaż szczegóły")
+button_szczegoly = Button(ramka_funkcjonalnosci, text="Pokaż szczegóły", command=szczegoly)
 button_szczegoly.grid(row=1, column=1, sticky='ew', padx=1, pady=1)
 
 
@@ -169,6 +192,12 @@ button_szczegoly.grid(row=1, column=1, sticky='ew', padx=1, pady=1)
 label_lista = Label(ramka_lista, text="Lista: ")
 label_lista.grid(row=0, column=0, sticky='w')
 
+label_filtr = Label(ramka_lista, text="Filtruj według Portu: ")
+label_filtr.grid(row=0, column=1, sticky='w')
+
+listbox_filtrowanie = ttk.Combobox(ramka_lista, status="readonly")
+listbox_filtrowanie.grid(row=1, column=0, sticky='ew')
+listbox_filtrowanie.bind("<<ComboboxSelected>>", odswiez_widok)
 
 ramka_lista.grid_columnconfigure(0, weight=1)
 ramka_lista.grid_rowconfigure(1, weight=1)
