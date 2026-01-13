@@ -1,3 +1,7 @@
+import requests
+from bs4 import BeautifulSoup
+
+
 porty:list=[]
 
 pracownicy:list=[]
@@ -5,28 +9,27 @@ pracownicy:list=[]
 klienci:list=[]
 
 
+def get_coordinates(location:str):
+    url: str = f'https://pl.wikipedia.org/wiki/{location}'
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) '
+                      'Chrome/120.0.0.0 Safari/537.36'
+    }
+    response = requests.get(url, headers=headers)
+    response_html = BeautifulSoup(response.text, 'html.parser')
+    latitude = float(response_html.select('.latitude')[1].text.replace(',', '.'))
+    longitude = float(response_html.select('.longitude')[1].text.replace(',', '.'))
+    print(f"latitude: {latitude}, longitude: {longitude}")
+    return [latitude, longitude]
+
+
 class Port:
     def __init__(self, port_location:str, docks:int, description:str):
         self.port_location = port_location
         self.docks = docks
         self.description = description
-        self.coords = self.get_coordinates()
-
-    def get_coordinates(self):
-        import requests
-        from bs4 import BeautifulSoup
-        url: str = f'https://pl.wikipedia.org/wiki/{self.port_location}'
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-                          'AppleWebKit/537.36 (KHTML, like Gecko) '
-                          'Chrome/120.0.0.0 Safari/537.36'
-        }
-        response = requests.get(url, headers=headers)
-        response_html = BeautifulSoup(response.text, 'html.parser')
-        latitude = float(response_html.select('.latitude')[1].text.replace(',', '.'))
-        longitude = float(response_html.select('.longitude')[1].text.replace(',', '.'))
-        print(f"latitude: {latitude}, longitude: {longitude}")
-        return [latitude, longitude]
+        self.coords = get_coordinates(port_location)
 
 
 class Pracownik:
@@ -35,6 +38,7 @@ class Pracownik:
         self.nazwisko = nazwisko
         self.pensja = pensja
         self.work_location = work_location
+        self.coords = get_coordinates(work_location)
 
 
 class Klient:
@@ -43,5 +47,6 @@ class Klient:
         self.nazwisko = nazwisko
         self.miejscowosc = miejscowosc
         self.rok_urodzenia = rok_urodzenia
+        self.coords = get_coordinates(miejscowosc)
 
 
