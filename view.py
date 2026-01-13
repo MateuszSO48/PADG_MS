@@ -31,7 +31,7 @@ ramka_mapa.grid(row=0, column=1, rowspan=4, sticky='nsew')
 def stworz_pole(etykieta, klucz, rzad):
     Label(ramka_formularz, text=etykieta).grid(row=rzad, column=0, sticky='w')
     entry = Entry(ramka_formularz)
-    entry.grid(row=rzad, column=1, sticky='w')
+    entry.grid(row=rzad, column=1, sticky='ew')
     pola_formularza[klucz] = entry
 
 
@@ -54,29 +54,39 @@ def odswiez_widok(event=None):
     filtr = combobox_filtrowanie.get()
 
     for obiekt in lista:
-        tekst = ""
+        tekst_listy = ""
+        tekst_mapy = ""
         miasto = ""
+
         if aktualny_tryb == "Porty":
-            tekst = obiekt.port_location
+            tekst_listy = f"{obiekt.port_location} (Doki: {obiekt.docks})"
+            tekst_mapy = obiekt.port_location
             miasto = obiekt.port_location
 
         elif aktualny_tryb == "Pracownicy":
-            tekst = f"{obiekt.imie} {obiekt.nazwisko} (Praca: {obiekt.work_location})"
+            tekst_listy = f"{obiekt.imie} {obiekt.nazwisko} (Praca: {obiekt.work_location})"
+            tekst_mapy = obiekt.nazwisko
             miasto = obiekt.work_location
 
         elif aktualny_tryb == "Klienci":
-            tekst = f"{obiekt.imie} {obiekt.nazwisko} (Z miasta: {obiekt.miejscowosc})"
+            tekst_listy = f"{obiekt.imie} {obiekt.nazwisko} (Z miasta: {obiekt.miejscowosc})"
+            tekst_mapy = obiekt.nazwisko
             miasto = obiekt.miejscowosc
 
         czy_pokazac = False
-        if filtr == "Wszystkie": czy_pokazac = True
-        elif aktualny_tryb == "Porty": czy_pokazac = True
-        elif miasto == filtr: czy_pokazac = True
+        if filtr == "Wszystkie" or filtr == "":
+            czy_pokazac = True
+
+        elif aktualny_tryb == "Porty":
+            czy_pokazac = True
+
+        elif miasto == filtr:
+            czy_pokazac = True
 
         if czy_pokazac:
-            listbox_lista.insert(END, tekst)
+            listbox_lista.insert(END, tekst_listy)
             if obiekt.coords != [52.0, 21.0]:
-                map_widget.set_marker(obiekt.coords[0], obiekt.coords[1], text=tekst)
+                map_widget.set_marker(obiekt.coords[0], obiekt.coords[1], text=tekst_mapy)
 
 
 
@@ -89,7 +99,7 @@ def zmien_tryb(nowy_tryb):
 
     pola_formularza.clear()
 
-    button_dodaj_obiekt.config(text="Dodaj obiekt", command=dodaj_obiekt)
+    button_dodaj_obiekt.config(text="Dodaj obiekt", bg="SystemButtonFace", command=dodaj_obiekt)
     Label(ramka_formularz, text=f"Formularz: {nowy_tryb}").grid(row=0, column=0, columnspan=2)
 
     if nowy_tryb == "Porty":
@@ -105,7 +115,7 @@ def zmien_tryb(nowy_tryb):
         stworz_pole("Pensja :", "pensja", 3)
         stworz_pole("Miejsce pracy :", "work_location", 4)
         label_filtr.grid(row=0, column=0, sticky='w')
-        combobox_filtrowanie.grid(row=1, column=0, sticky='w')
+        combobox_filtrowanie.grid(row=1, column=0, sticky='ew')
 
     elif nowy_tryb == "Klienci":
         stworz_pole("Imię : ", "imie", 1)
@@ -154,7 +164,7 @@ def dodaj_obiekt():
         odswiez_widok()
 
     except Exception as e:
-       messagebox.showerror("Bład danych")
+       messagebox.showerror("Bład", f"Błąd danych: {e}")
 
 
 def usun_obiekt():
@@ -174,6 +184,8 @@ def usun_obiekt():
 
     odswiez_widok()
     aktualizuj_filtr()
+    button_dodaj_obiekt.config(text="Dodaj obiekt", bg="SystemButtonFace", command=dodaj_obiekt)
+    wyczysc_pola()
 
 
 def zapisz_zmiany(i):
@@ -209,10 +221,10 @@ def zapisz_zmiany(i):
         odswiez_widok()
         aktualizuj_filtr()
 
-        button_dodaj_obiekt.config(text="Dodaj obiekt", command=dodaj_obiekt)
+        button_dodaj_obiekt.config(text="Dodaj obiekt", bg="SystemButtonFace", command=dodaj_obiekt)
 
     except Exception as e:
-       messagebox.showerror("Bład, sprawdź dane")
+       messagebox.showerror("Bład", f"Błąd edycji: {e}")
 
 
 def edytuj_obiekt():
@@ -241,11 +253,12 @@ def edytuj_obiekt():
         pola_formularza['miejscowosc'].insert(0, obiekt.miejscowosc)
         pola_formularza['rok_urodzenia'].insert(0, str(obiekt.rok_urodzenia))
 
-    button_dodaj_obiekt.config(text="Zapisz zmiany", command=lambda: zapisz_zmiany(i))
+    button_dodaj_obiekt.config(text="Zapisz zmiany", bg="#ffff99", command=lambda: zapisz_zmiany(i))
 
 
 def pokaz_szczegoly():
     if aktualny_tryb != "Porty":
+        messagebox.showinfo("Informacja","Szczegóły są dostępne tylko dla Portów.\nPrzejdź do zakładki Porty, aby zobaczyć powiązanych pracowników i klientów.")
         return
 
     wybor = listbox_lista.curselection()
@@ -264,15 +277,15 @@ def pokaz_szczegoly():
 
         map_widget.delete_all_marker()
         if port.coords != [52.0, 21.0]:
-            map_widget.set_marker(port.coords[0], port.coords[1], text=f"Port: {port.port_location}")
+            map_widget.set_marker(port.coords[0], port.coords[1], text=port.port_location)
 
         for pracownik in pracownicy:
             if pracownik.coords != [52.0, 21.0]:
-                map_widget.set_marker(pracownik.coords[0], pracownik.coords[1], text=f"{pracownik.imie}{pracownik.nazwisko}")
+                map_widget.set_marker(pracownik.coords[0], pracownik.coords[1], text=pracownik.nazwisko)
 
         for klient in klienci:
             if klient.coords != [52.0, 21.0]:
-                map_widget.set_marker(klient.coords[0], klient.coords[1], text=f"{klient.imie}{klient.nazwisko}")
+                map_widget.set_marker(klient.coords[0] + 0.002, klient.coords[1], text=klient.nazwisko)
 
             if port.coords != [52.0, 21.0]:
                 map_widget.set_position(port.coords[0], port.coords[1])
@@ -292,8 +305,6 @@ def zlokalizuj_obiekt(event=None):
     if obiekt and obiekt.coords != [52.0, 21.0]:
         map_widget.set_position(obiekt.coords[0], obiekt.coords[1])
         map_widget.set_zoom(12)
-
-
 
 
 
@@ -346,5 +357,6 @@ map_widget.pack(fill="both", expand=True)
 zmien_tryb("Porty")
 
 def start():
+    zmien_tryb("Porty")
     root.mainloop()
 
