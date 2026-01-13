@@ -1,4 +1,4 @@
-from model import Port, Pracownik, Klient
+from model import Port, Pracownik, Klient, get_coordinates
 
 porty = []
 pracownicy = []
@@ -15,16 +15,27 @@ def get_list(tryb):
 
 
 def get_port_names():
-    return [port.port_location for port in porty]
+    names = []
+    for port in porty:
+        names.append(port.port_location)
+    return names
 
 
 def filter_details(miasto):
-    lista_pracownikow = [pracownik for pracownik in pracownicy if pracownik.work_location == miasto]
-    lista_klientow = [klient for klient in klienci if klient.miejscowosc == miasto]
+    lista_pracownikow = []
+    for pracownik in pracownicy:
+        if pracownik.work_location == miasto:
+            lista_pracownikow.append(pracownik)
+
+    lista_klientow = []
+    for klient in klienci:
+        if klient.miejscowosc == miasto:
+            lista_klientow.append(klient)
+
     return lista_pracownikow, lista_klientow
 
 
-def add_port(port_data:dict)->None:
+def add_port(port_data):
     port_location = port_data['port_location']
     docks = int(port_data['docks'])
     description = port_data['description']
@@ -41,10 +52,11 @@ def update_port(port_data:dict, i:int)->None:
     port.port_location = port_data['[port_location]']
     port.docks = port_data['[docks]']
     port.description = port_data['description']
+    port.coords = get_coordinates(port.port_location)
 
 
 
-def add_pracownik(pracownik_data:dict)->None:
+def add_pracownik(pracownik_data)->None:
     imie = pracownik_data['imie']
     nazwisko = pracownik_data['nazwisko']
     pensja = int(pracownik_data['pensja'])
@@ -63,10 +75,10 @@ def update_pracownik(pracownik_data:list, i:int)->None:
     pracownik.nazwisko = pracownik_data['nazwisko']
     pracownik.pensja = pracownik_data['pensja']
     pracownik.work_location = pracownik_data['work_location']
+    pracownik.coords = get_coordinates(pracownik.work_location)
 
 
-
-def add_klient(klient_data:dict)->None:
+def add_klient(klient_data)->None:
     imie = klient_data['imie']
     nazwisko = klient_data['nazwisko']
     miejscowosc = klient_data['miejscowosc']
@@ -86,7 +98,7 @@ def update_klient(klient_data:list, i:int)->None:
     klient.nazwisko = klient_data['nazwisko']
     klient.miejscowosc = klient_data['miejscowosc']
     klient.rok_urodzenia = klient_data['rok_urodzenia']
-
+    klient.coords = get_coordinates(klient.miejscowosc)
 
 
 
