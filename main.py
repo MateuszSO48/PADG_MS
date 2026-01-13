@@ -1,13 +1,5 @@
-biblioteki
-
-baza danych
+import view
 
 
-działanie przyciskó
-
-
-załadowanie bazy danych
-
-
-if __name == '__main__':
-
+if __name__ == '__main__':
+    view.start()
