@@ -25,28 +25,40 @@ def get_coordinates(location:str):
 
 
 class Port:
-    def __init__(self, port_location:str, docks:int, description:str):
+    def __init__(self, port_location:str, docks:int, description:str, id=None, saved_coords=None):
+        self.id = id
         self.port_location = port_location
         self.docks = docks
         self.description = description
-        self.coords = get_coordinates(port_location)
+        if saved_coords:
+            self.coords = saved_coords
+        else:
+            self.coords = get_coordinates(port_location)
 
 
 class Pracownik:
-    def __init__(self, imie:str, nazwisko:str, pensja:int, work_location:str):
+    def __init__(self, imie:str, nazwisko:str, pensja:int, work_location:str, id=None, saved_coords=None):
+        self.id = id
         self.imie = imie
         self.nazwisko = nazwisko
         self.pensja = pensja
         self.work_location = work_location
-        self.coords = get_coordinates(work_location)
+        if saved_coords:
+            self.coords = saved_coords
+        else:
+            self.coords = get_coordinates(work_location)
 
 
 class Klient:
-    def __init__(self, imie:str, nazwisko:str, miejscowosc:str, rok_urodzenia:int):
+    def __init__(self, imie:str, nazwisko:str, miejscowosc:str, rok_urodzenia:int, id=None, saved_coords=None):
+        self.id = id
         self.imie = imie
         self.nazwisko = nazwisko
         self.miejscowosc = miejscowosc
         self.rok_urodzenia = rok_urodzenia
-        self.coords = get_coordinates(miejscowosc)
+        if saved_coords:
+            self.coords = saved_coords
+        else:
+            self.coords = get_coordinates(miejscowosc)
 
 
