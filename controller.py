@@ -1,9 +1,46 @@
 from model import Port, Pracownik, Klient
 from model import get_coordinates
+import psycopg2
+
+polaczenie = None
 
 porty = []
 pracownicy = []
 klienci = []
+
+
+def nawiaz_polaczenie(config):
+    global polaczenie
+    polaczenie = psycopg2.connect(**config)
+    print("Połączono z bazą danych pomyślnie.")
+
+
+def wczytaj_dane():
+    global porty, pracownicy, klienci
+    porty.clear()
+    pracownicy.clear()
+    klienci.clear()
+
+    cursor = polaczenie.cursor()
+
+    SQL = "SELECT id, lokalizacja, doki, opis, lat, lon FROM porty"
+    cursor.execute(SQL)
+    for wiersz in cursor.fetchall():
+        nowy_port = Port(wiersz[1], wiersz[2], wiersz[3], id=wiersz[0], saved_coords=[wiersz[4], wiersz[5]])
+        porty.append(nowy_port)
+
+    SQL = "SELECT id, imie, nazwisko, pensja, miejsce_pracy, lat, lon FROM pracownicy"
+    cursor.execute(SQL)
+    for wiersz in cursor.fetchall():
+        nowy_pracownik = Pracownik(wiersz[1], wiersz[2], wiersz[3], wiersz[4],id=wiersz[0], saved_coords=[wiersz[5], wiersz[6]])
+        pracownicy.append(nowy_pracownik)
+
+    SQL = "SELECT id, imie, nazwisko, miejscowosc, rok_urodzenia, lat, lon FROM klienci"
+    cursor.execute(SQL)
+    for wiersz in cursor.fetchall():
+        nowy_klient = Klient(wiersz[1], wiersz[2], wiersz[3], wiersz[4], id=wiersz[0], saved_coords=[wiersz[5], wiersz[6]])
+        klienci.append(nowy_klient)
+
 
 
 def get_list(tryb):
@@ -37,67 +74,96 @@ def filter_details(miasto):
 
 
 def add_port(port_data)->None:
-    port_location = port_data['port_location']
-    docks = int(port_data['docks'])
-    description = port_data['description']
-    porty.append(Port(port_location=port_location, docks=docks, description=description))
+    temp = Port(port_data['port_location'], int(port_data['docks']), port_data['description'])
+
+    cursor = polaczenie.cursor()
+    SQL = f"INSERT INTO porty (lokalizacja, doki, opis, lat, lon) VALUES ('{temp.port_location}', {temp.docks}, '{temp.description}', {temp.coords[0]}, {temp.coords[1]})"
+    cursor.execute(SQL)
+    polaczenie.commit()
+    wczytaj_dane()
 
 
 def add_pracownik(pracownik_data)->None:
-    imie = pracownik_data['imie']
-    nazwisko = pracownik_data['nazwisko']
-    pensja = int(pracownik_data['pensja'])
-    work_location = pracownik_data['work_location']
-    pracownicy.append(Pracownik(imie=imie, nazwisko=nazwisko, pensja=pensja, work_location=work_location))
+    temp = Pracownik(pracownik_data['imie'], pracownik_data['nazwisko'], int(pracownik_data['pensja']), pracownik_data['work_location'])
+
+    cursor = polaczenie.cursor()
+    SQL = f"INSERT INTO pracownicy (imie, nazwisko, pensja, miejsce_pracy, lat, lon) VALUES ('{temp.imie}', '{temp.nazwisko}', {temp.pensja}, '{temp.work_location}', {temp.coords[0]}, {temp.coords[1]})"
+    cursor.execute(SQL)
+    polaczenie.commit()
+    wczytaj_dane()
 
 
 def add_klient(klient_data)->None:
-    imie = klient_data['imie']
-    nazwisko = klient_data['nazwisko']
-    miejscowosc = klient_data['miejscowosc']
-    rok_urodzenia = int(klient_data['rok_urodzenia'])
-    klienci.append(Klient(imie=imie, nazwisko=nazwisko, miejscowosc=miejscowosc, rok_urodzenia=rok_urodzenia))
+    temp = Klient(klient_data['imie'], klient_data['nazwisko'], klient_data['miejscowosc'], int(klient_data['rok_urodzenia']))
+
+    cursor = polaczenie.cursor()
+    SQL = f"INSERT INTO klienci (imie, nazwisko, miejscowosc, rok_urodzenia, lat, lon) VALUES ('{temp.imie}', '{temp.nazwisko}', '{temp.miejscowosc}', {temp.rok_urodzenia}, {temp.coords[0]}, {temp.coords[1]})"
+    cursor.execute(SQL)
+    polaczenie.commit()
+    wczytaj_dane()
 
 
 def remove_port(i:int)->None:
     if i < len(porty):
-        porty.pop(i)
+        objekt_id = porty[i].id
+        cursor = polaczenie.cursor()
+        SQL = f"DELETE FROM porty WHERE id={objekt_id}"
+        cursor.execute(SQL)
+        polaczenie.commit()
+        wczytaj_dane()
 
 
 def remove_pracownik(i:int)->None:
     if i < len(pracownicy):
-        pracownicy.pop(i)
+        objekt_id = pracownicy[i].id
+        cursor = polaczenie.cursor()
+        SQL = f"DELETE FROM pracownicy WHERE id={objekt_id}"
+        cursor.execute(SQL)
+        polaczenie.commit()
+        wczytaj_dane()
 
 
 def remove_klient(i:int)->None:
     if i < len(klienci):
-        klienci.pop(i)
+        obj_id = klienci[i].id
+        cursor = polaczenie.cursor()
+        SQL = f"DELETE FROM klienci WHERE id={obj_id}"
+        cursor.execute(SQL)
+        polaczenie.commit()
+        wczytaj_dane()
 
 
 def update_port(i:int, port_data:dict)->None:
     port = porty[i]
-    port.port_location = port_data['port_location']
-    port.docks = int(port_data['docks'])
-    port.description = port_data['description']
-    port.coords = get_coordinates(port.port_location)
+    coords = get_coordinates(port_data['port_location'])
+
+    cursor = polaczenie.cursor()
+    SQL = f"UPDATE porty SET lokalizacja='{port_data['port_location']}', doki={int(port_data['docks'])}, opis='{port_data['description']}', lat={coords[0]}, lon={coords[1]} WHERE id={port.id}"
+    cursor.execute(SQL)
+    polaczenie.commit()
+    wczytaj_dane()
 
 
 def update_pracownik(i:int, pracownik_data:list)->None:
     pracownik = pracownicy[i]
-    pracownik.imie = pracownik_data['imie']
-    pracownik.nazwisko = pracownik_data['nazwisko']
-    pracownik.pensja = int(pracownik_data['pensja'])
-    pracownik.work_location = pracownik_data['work_location']
-    pracownik.coords = get_coordinates(pracownik.work_location)
+    coords = get_coordinates(pracownik_data['work_location'])
+
+    cursor = polaczenie.cursor()
+    SQL = f"UPDATE pracownicy SET imie='{pracownik_data['imie']}', nazwisko='{pracownik_data['nazwisko']}', pensja={int(pracownik_data['pensja'])}, miejsce_pracy='{pracownik_data['work_location']}', lat={coords[0]}, lon={coords[1]} WHERE id={pracownik.id}"
+    cursor.execute(SQL)
+    polaczenie.commit()
+    wczytaj_dane()
 
 
 def update_klient(i:int, klient_data:list)->None:
     klient = klienci[i]
-    klient.imie = klient_data['imie']
-    klient.nazwisko = klient_data['nazwisko']
-    klient.miejscowosc = klient_data['miejscowosc']
-    klient.rok_urodzenia = int(klient_data['rok_urodzenia'])
-    klient.coords = get_coordinates(klient.miejscowosc)
+    coords = get_coordinates(klient_data['miejscowosc'])
+
+    cursor = polaczenie.cursor()
+    SQL = f"UPDATE klienci SET imie='{klient_data['imie']}', nazwisko='{klient_data['nazwisko']}', miejscowosc='{klient_data['miejscowosc']}', rok_urodzenia={int(klient_data['rok_urodzenia'])}, lat={coords[0]}, lon={coords[1]} WHERE id={klient.id}"
+    cursor.execute(SQL)
+    polaczenie.commit()
+    wczytaj_dane()
 
 
 
